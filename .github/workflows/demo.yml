@@ -1,0 +1,79 @@
+name: Demo
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-smoke:
+    name: Build, then smoke test in Chromium, Firefox and WebKit
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # The CLI must be the exact wasm-bindgen version in Cargo.lock.
+      - name: Read the wasm-bindgen version from Cargo.lock
+        id: wasm-bindgen
+        run: |
+          version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - id: wasm-bindgen-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/wasm-bindgen-cli
+          key: wasm-bindgen-cli-${{ runner.os }}-${{ steps.wasm-bindgen.outputs.version }}
+      - name: Install wasm-bindgen-cli
+        if: steps.wasm-bindgen-cache.outputs.cache-hit != 'true'
+        env:
+          VERSION: ${{ steps.wasm-bindgen.outputs.version }}
+        run: cargo install --locked --root ~/wasm-bindgen-cli wasm-bindgen-cli --version "$VERSION"
+      - run: echo "$HOME/wasm-bindgen-cli/bin" >> "$GITHUB_PATH"
+
+      - name: Build
+        run: ./build.sh
+      - name: Keep the built web/ folder
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: web
+          path: web/
+          if-no-files-found: error
+          retention-days: 7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium firefox webkit
+
+      # Chromium and Firefox run the sealed store. Playwright's WebKit for Linux has no
+      # Origin Private File System, so the page falls back to the memory store there, and the
+      # test expects that and prints which store ran.
+      - name: Smoke test (Chromium)
+        if: ${{ !cancelled() }}
+        run: node test/smoke.mjs chromium
+      - name: Smoke test (Firefox)
+        if: ${{ !cancelled() }}
+        run: node test/smoke.mjs firefox
+      - name: Smoke test (WebKit)
+        if: ${{ !cancelled() }}
+        run: node test/smoke.mjs webkit
+      - name: Negative control, no 'wasm-unsafe-eval' on the worker (all engines)
+        if: ${{ !cancelled() }}
+        run: |
+          node test/smoke.mjs chromium --negative
+          node test/smoke.mjs firefox --negative
+          node test/smoke.mjs webkit --negative
