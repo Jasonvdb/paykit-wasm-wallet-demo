@@ -1,0 +1,80 @@
+<!doctype html>
+<!--
+  The demo's only page. It holds no inline script or style: the server's Content Security
+  Policy allows neither. app.js does the work, and talks to the engine in worker.js.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paykit v0.2 in WebAssembly</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header>
+  <h1>Paykit v0.2 in WebAssembly</h1>
+  <p class="status">
+    <span>engine: <b id="engine-state" data-state="loading">loading</b></span>
+    <span>wasm: <b id="wasm-size">-</b></span>
+    <span>load: <b id="load-time">-</b></span>
+    <span>store: <b id="store-kind" data-kind="">-</b></span>
+    <span>simulated Switch network, mocked payment rail</span>
+  </p>
+  <p class="note" id="store-reason"></p>
+  <div class="stopped" id="stopped" hidden>
+    <p><b>Wallet engine stopped.</b> <span id="stopped-reason"></span></p>
+    <button type="button" id="restart">Restart engine</button>
+  </div>
+</header>
+
+<main>
+  <section class="panel" id="bob">
+    <h2>Bob <small>gets paid</small></h2>
+    <p class="balance">Mock balance: <b id="bob-balance">-</b> sats</p>
+    <form id="request-form">
+      <label>Amount (sats)
+        <input id="amount" name="amount" type="number" min="1" step="1" value="1000" required>
+      </label>
+      <label>Memo (sent as the Payment Reference)
+        <input id="memo" name="memo" type="text" maxlength="256" value="Coffee" required>
+      </label>
+      <button type="submit" id="request-button" disabled>Request payment</button>
+    </form>
+    <h3>Payment Receipts sent</h3>
+    <ul class="rows" id="bob-receipts"></ul>
+  </section>
+
+  <section class="panel" id="alice">
+    <h2>Alice <small>pays</small></h2>
+    <p class="balance">Mock balance: <b id="alice-balance">-</b> sats</p>
+    <h3>Open Payment Requests</h3>
+    <ul class="rows" id="open-requests"></ul>
+    <h3>Payment Receipts received</h3>
+    <ul class="rows" id="alice-receipts"></ul>
+  </section>
+</main>
+
+<section class="panel" id="previous" hidden>
+  <h2>Payment Receipts from the previous session</h2>
+  <p class="note">Read back from the sealed store after the reload, with no network: the
+    simulated network did not survive the reload, the wallets' sealed state did.</p>
+  <ul class="rows" id="previous-receipts"></ul>
+</section>
+
+<section class="panel" id="log-panel">
+  <h2>Engine log <button type="button" id="reset" disabled>Reset demo</button></h2>
+  <ol id="log"></ol>
+</section>
+
+<footer>
+  <p><b>Real:</b> the Paykit v0.2 SDK compiled to WebAssembly, running in a dedicated
+    worker: joining, the Payment Request, paying, the Payment Proof and the Payment Receipt;
+    the sealed store; the Content Security Policy.
+    <b>Simulated:</b> the Pubky Switch network, in memory inside the same WebAssembly
+    instance, with both wallets in this one tab.
+    <b>Mocked:</b> the payment rail and the balances. No real money, chain or keys.</p>
+</footer>
+</body>
+</html>
