@@ -787,7 +787,7 @@ checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
 [[package]]
 name = "paykit-browser"
 version = "0.2.0-alpha.0"
-source = "git+https://github.com/pubky/paykit-rs?rev=d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e#d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e"
+source = "git+https://github.com/pubky/paykit-rs?rev=d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded#d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded"
 dependencies = [
  "chacha20poly1305 0.10.1",
  "futures-channel",
@@ -807,7 +807,7 @@ dependencies = [
 [[package]]
 name = "paykit-lib"
 version = "0.2.0-alpha.0"
-source = "git+https://github.com/pubky/paykit-rs?rev=d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e#d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e"
+source = "git+https://github.com/pubky/paykit-rs?rev=d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded#d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded"
 dependencies = [
  "pubky-switch-core",
  "serde",
@@ -818,7 +818,7 @@ dependencies = [
 [[package]]
 name = "paykit-sdk"
 version = "0.2.0-alpha.0"
-source = "git+https://github.com/pubky/paykit-rs?rev=d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e#d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e"
+source = "git+https://github.com/pubky/paykit-rs?rev=d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded#d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded"
 dependencies = [
  "paykit-lib",
  "pubky-switch-client",
@@ -898,7 +898,7 @@ dependencies = [
 [[package]]
 name = "pubky-switch-client"
 version = "0.1.0"
-source = "git+https://github.com/pubky/pubky-switch?rev=7df3d61141709648b65cab464db5dea2ff02dbe0#7df3d61141709648b65cab464db5dea2ff02dbe0"
+source = "git+https://github.com/pubky/pubky-switch?rev=309f01da50cbc8c37c655601e97605bb02a4f929#309f01da50cbc8c37c655601e97605bb02a4f929"
 dependencies = [
  "blake3",
  "bytes",
@@ -921,7 +921,7 @@ dependencies = [
 [[package]]
 name = "pubky-switch-core"
 version = "0.1.0"
-source = "git+https://github.com/pubky/pubky-switch?rev=7df3d61141709648b65cab464db5dea2ff02dbe0#7df3d61141709648b65cab464db5dea2ff02dbe0"
+source = "git+https://github.com/pubky/pubky-switch?rev=309f01da50cbc8c37c655601e97605bb02a4f929#309f01da50cbc8c37c655601e97605bb02a4f929"
 dependencies = [
  "base64 0.22.1",
  "blake3",
