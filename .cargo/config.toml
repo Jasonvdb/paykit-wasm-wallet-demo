@@ -1,0 +1,4 @@
+# The engine runs only in a browser, so a plain `cargo build` or `cargo clippy` builds for
+# WebAssembly. build.sh passes the target explicitly too.
+[build]
+target = "wasm32-unknown-unknown"

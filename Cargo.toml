@@ -1,0 +1,53 @@
+# The wallet engine: Paykit v0.2 compiled to WebAssembly, with a small hand-written
+# JavaScript surface (src/lib.rs). It builds only for wasm32-unknown-unknown:
+# .cargo/config.toml makes that the default target, and build.sh runs wasm-bindgen on the
+# result.
+[package]
+name = "paykit-wasm-wallet-demo"
+description = "Example web wallet engine: Paykit v0.2 in a browser worker"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.91.1"
+license = "MIT"
+publish = false
+
+[lib]
+# A `cdylib` is a library with a C-like ABI and no Rust metadata: for wasm32 it is the
+# `.wasm` module that wasm-bindgen wraps for JavaScript.
+crate-type = ["cdylib"]
+test = false
+doctest = false
+
+# Paykit and the Pubky Switch crates come from git, pinned to exact commits. Paykit's browser
+# support (`paykit-browser`) is not merged yet: the pin is the head of the draft branch
+# `feat/browser-csp-worker` of pubky/paykit-rs (pull request #603), and has to move when that
+# stack merges. The Switch commit is the one that Paykit commit pins in its own Cargo.toml.
+[dependencies]
+# The browser host pieces: the sealed store on the Origin Private File System, the browser's
+# clock and timer, and the panic hook. Depending on it also selects the browser random number
+# backend (`crypto.getRandomValues`) for every getrandom version in the graph.
+paykit-browser = { git = "https://github.com/pubky/paykit-rs", rev = "d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e" }
+paykit-lib = { git = "https://github.com/pubky/paykit-rs", rev = "d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e" }
+# `test-support` turns on `FakeRail`, the SDK's in-memory payment rail. It is the mocked part
+# of this demo: no real money moves.
+paykit-sdk = { git = "https://github.com/pubky/paykit-rs", rev = "d2bf28a758d028c5d8ff90da9eda57ab8bb22a9e", features = ["test-support"] }
+# `test-support` turns on the client's `testing` module: in-memory scripted switches, a router
+# between them, test signers and an in-memory Homeserver. That is the simulated network.
+pubky-switch-client = { git = "https://github.com/pubky/pubky-switch", rev = "7df3d61141709648b65cab464db5dea2ff02dbe0", default-features = false, features = ["test-support"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Exactly the version of the wasm-bindgen CLI that build.sh runs: the CLI refuses a module
+# built with any other version.
+wasm-bindgen = "=0.2.130"
+wasm-bindgen-futures = "0.4.80"
+# `Instant` on `performance.now()`: std's clocks panic on wasm32-unknown-unknown.
+web-time = "1"
+
+# For the size of the bundle, as paykit-rs's own `browser-release` profile: optimize for size
+# over speed, link-time optimization across all crates, one codegen unit, no symbols.
+[profile.browser-release]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
