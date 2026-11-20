@@ -1,0 +1,19 @@
+{
+  "name": "paykit-wasm-wallet-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Example web wallet that runs Paykit v0.2 as WebAssembly in a browser worker",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "./build.sh",
+    "serve": "node serve.mjs",
+    "test": "node test/smoke.mjs chromium && node test/smoke.mjs firefox && node test/smoke.mjs webkit"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
