@@ -26,14 +26,14 @@ doctest = false
 # The browser host pieces: the sealed store on the Origin Private File System, the browser's
 # clock and timer, and the panic hook. Depending on it also selects the browser random number
 # backend (`crypto.getRandomValues`) for every getrandom version in the graph.
-paykit-browser = { git = "https://github.com/pubky/paykit-rs", rev = "d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded" }
-paykit-lib = { git = "https://github.com/pubky/paykit-rs", rev = "d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded" }
+paykit-browser = { git = "https://github.com/pubky/paykit-rs", rev = "1f853e7721a645a2ad8c0fe6a29fb335422c1482" }
+paykit-lib = { git = "https://github.com/pubky/paykit-rs", rev = "1f853e7721a645a2ad8c0fe6a29fb335422c1482" }
 # `test-support` turns on `FakeRail`, the SDK's in-memory payment rail. It is the mocked part
 # of this demo: no real money moves.
-paykit-sdk = { git = "https://github.com/pubky/paykit-rs", rev = "d6cae7d948bcdb3e4ecd1316e9f9e1d8206b8ded", features = ["test-support"] }
+paykit-sdk = { git = "https://github.com/pubky/paykit-rs", rev = "1f853e7721a645a2ad8c0fe6a29fb335422c1482", features = ["test-support"] }
 # `test-support` turns on the client's `testing` module: in-memory scripted switches, a router
 # between them, test signers and an in-memory Homeserver. That is the simulated network.
-pubky-switch-client = { git = "https://github.com/pubky/pubky-switch", rev = "309f01da50cbc8c37c655601e97605bb02a4f929", default-features = false, features = ["test-support"] }
+pubky-switch-client = { git = "https://github.com/pubky/pubky-switch", rev = "8c78b71a62001f272146178eb65dfcb11d8a3a3d", default-features = false, features = ["test-support"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Exactly the version of the wasm-bindgen CLI that build.sh runs: the CLI refuses a module
