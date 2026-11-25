@@ -40,7 +40,7 @@ mocked payment rail.
 - Paykit's browser support is not merged yet. `Cargo.toml` pins the head of the draft branch
   `feat/browser-csp-worker` of pubky/paykit-rs
   ([pull request #603](https://github.com/pubky/paykit-rs/pull/603), part of a stack of
-  browser pull requests), pinned to `1f853e7`. The pin must move when that stack merges.
+  browser pull requests), pinned to `0e1db21`. The pin must move when that stack merges.
 - The evidence against a real Switch service, over a real network, is in those pull requests
   (#603 and the stack it builds on), not here.
 
@@ -99,21 +99,21 @@ artifact, and runs the smoke test and the negative control in all three engines.
 
 ## Measured
 
-At paykit-rs `1f853e7`, on an Apple Silicon Mac, `browser-release` build, Playwright 1.62.1,
+At paykit-rs `0e1db21`, on an Apple Silicon Mac, `browser-release` build, Playwright 1.62.1,
 two runs each:
 
 | | Raw | gzip -9 |
 | --- | --- | --- |
-| `paykit_wasm_wallet_demo_bg.wasm` | 6,790,981 bytes | 2,524,868 bytes |
+| `paykit_wasm_wallet_demo_bg.wasm` | 7,380,728 bytes | 2,744,192 bytes |
 | `paykit_wasm_wallet_demo.js` (glue) | 36,766 bytes | 7,470 bytes |
 
 | Engine (store) | Load | Start | Request | Pay, Proof and Receipt |
 | --- | --- | --- | --- | --- |
-| Chromium (sealed) | 20 to 23 ms | 111 to 115 ms | 39 to 40 ms | 105 to 114 ms |
-| Chromium (memory) | 15 to 17 ms | 67 to 73 ms | 34 ms | 83 to 87 ms |
-| Firefox (sealed) | 158 to 173 ms | 416 to 422 ms | 241 to 266 ms | 975 to 1,018 ms |
-| Firefox (memory) | 154 to 164 ms | 357 ms | 221 ms | 846 to 854 ms |
-| WebKit (memory) | 29 to 33 ms | 69 to 85 ms | 31 to 54 ms | 94 to 99 ms |
+| Chromium (sealed) | 17 to 18 ms | 107 to 115 ms | 40 to 42 ms | 108 ms |
+| Chromium (memory) | 13 ms | 70 to 71 ms | 36 ms | 86 to 87 ms |
+| Firefox (sealed) | 171 to 178 ms | 409 to 414 ms | 244 to 248 ms | 982 to 1,015 ms |
+| Firefox (memory) | 166 to 168 ms | 352 to 356 ms | 217 to 218 ms | 838 to 842 ms |
+| WebKit (memory) | 26 to 27 ms | 64 to 68 ms | 32 to 38 ms | 96 ms |
 
 Load is the worker's fetch, compile and instantiate of the `.wasm`. The other columns are
 whole calls as the page sees them: start reads back the last session, opens fresh stores and
