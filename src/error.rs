@@ -2,8 +2,9 @@
 //!
 //! The text crosses to JavaScript and is shown on the page and in the console, so it says
 //! which step failed and the *kind* of error only: the variant name of the SDK's error and
-//! the switch's error code when there is one. It never formats an SDK error's own text, which
-//! can quote data such as a record or a message, and so might show more than a log should.
+//! the Dispatch's error code when there is one. It never formats an SDK error's own text,
+//! which can quote data such as a record or a message, and so might show more than a log
+//! should.
 
 use std::fmt;
 
@@ -31,12 +32,12 @@ impl fmt::Display for Failure {
     }
 }
 
-/// The variant of `error`, plus the switch's error code when the switch answered with one.
+/// The variant of `error`, plus the Dispatch's error code when it answered with one.
 fn sdk_kind(error: &PaykitError) -> String {
     // `PaykitError` is `#[non_exhaustive]`: a newer SDK may add variants, so a match outside
     // the SDK's crate must have a catch-all arm.
     let variant = match error {
-        PaykitError::Client(_) => "Switch client error",
+        PaykitError::Client(_) => "Dispatch client error",
         PaykitError::Lib(_) => "Paykit rule error",
         PaykitError::Rail(_) => "payment rail error",
         PaykitError::Homeserver(_) => "Homeserver error",

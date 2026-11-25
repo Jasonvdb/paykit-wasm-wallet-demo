@@ -9,7 +9,7 @@
 //! storage folder; it does not protect against script running in this origin, which can do
 //! anything the wallet can. paykit-browser's README ("Durable store") lists the limits.
 //!
-//! `OpfsStore` works only in a dedicated worker: the Switch client calls its store
+//! `OpfsStore` works only in a dedicated worker: the Dispatch client calls its store
 //! synchronously, and only a dedicated worker has synchronous file handles
 //! (`FileSystemSyncAccessHandle`). That is one reason the engine lives in a worker.
 //!
@@ -20,7 +20,7 @@
 use std::sync::Arc;
 
 use paykit_browser::store::{OpfsStore, WrappingKey};
-use pubky_switch_client::store::{MemoryStore, StateStore, WriteBatch};
+use pubky_dispatch_client::store::{MemoryStore, StateStore, WriteBatch};
 use serde::Serialize;
 
 use crate::error::Failure;
@@ -31,8 +31,8 @@ pub const ALICE_STORE: &str = "demo-alice";
 /// The name of Bob's store.
 pub const BOB_STORE: &str = "demo-bob";
 
-/// The engine's own namespace in each store. The Switch client and the SDK write only their
-/// own namespaces.
+/// The engine's own namespace in each store. The Dispatch client and the SDK write only
+/// their own namespaces.
 const HOST_NAMESPACE: &str = "demo";
 /// The key, in [`HOST_NAMESPACE`], of the App ID of the app whose state the store keeps.
 const APP_ID_KEY: &[u8] = b"app_id";

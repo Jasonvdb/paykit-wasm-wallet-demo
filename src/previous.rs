@@ -1,12 +1,13 @@
 //! **Real.** Reading back the Payment Receipts of the previous session from the sealed
 //! stores, after a page reload.
 //!
-//! The simulated network lives in WebAssembly memory, so a reload ends it: the switches, and
-//! the identities' signers, are gone, and payments cannot go on. The wallets' own state is
-//! not gone: it is sealed on disk. `Paykit::load` opens an app from its store alone, without
-//! a network call, and the wallet's Payment Receipts and the payee's records are read from
-//! that state. To show that no network is involved, the apps are loaded with a transport that
-//! has no routes at all (an empty `Router`): any request through it would fail to connect.
+//! The simulated network lives in WebAssembly memory, so a reload ends it: the Dispatches,
+//! and the identities' signers, are gone, and payments cannot go on. The wallets' own state
+//! is not gone: it is sealed on disk. `Paykit::load` opens an app from its store alone,
+//! without a network call, and the wallet's Payment Receipts and the payee's records are
+//! read from that state. To show that no network is involved, the apps are loaded with a
+//! transport that has no routes at all (an empty `Router`): any request through it would
+//! fail to connect.
 
 use std::sync::Arc;
 
@@ -14,8 +15,8 @@ use paykit_browser::clock::JsClock;
 use paykit_browser::timer::JsTimer;
 use paykit_sdk::rail::FakeRail;
 use paykit_sdk::{AppEnv, PayeeStatus, Paykit, PaykitConfig, ReceiptsOf, RequestRef};
-use pubky_switch_client::store::{StateStore, StoreHandle};
-use pubky_switch_client::testing::{Router, TestHomeserver};
+use pubky_dispatch_client::store::{StateStore, StoreHandle};
+use pubky_dispatch_client::testing::{Router, TestHomeserver};
 use serde::Serialize;
 
 use crate::engine::{hex, ReceiptRow};
@@ -93,8 +94,8 @@ pub async fn read_back() -> Result<Option<PreviousSession>, Failure> {
     Ok(Some(previous))
 }
 
-/// Loads app `app_id` from `store` alone: no route to any switch, an empty Homeserver, the
-/// browser's clock and timer, and a fresh mock rail.
+/// Loads app `app_id` from `store` alone: no route to any Dispatch, an empty Homeserver,
+/// the browser's clock and timer, and a fresh mock rail.
 async fn load(store: &Arc<dyn StateStore>, app_id: [u8; 16], who: &str) -> Result<Paykit, Failure> {
     let env = AppEnv {
         store: StoreHandle::inline(Arc::clone(store)),

@@ -25,9 +25,9 @@ mocked payment rail.
 
 **Simulated or mocked:**
 
-- The network. The Pubky Switch services the wallets talk to are in-memory test switches
-  (`pubky_switch_client::testing`) inside the same WebAssembly instance. Nothing leaves the
-  browser. So a reload ends the network, and payments start over in a new world.
+- The network. The Pubky Dispatch services the wallets talk to are in-memory test Dispatches
+  (`pubky_dispatch_client::testing`) inside the same WebAssembly instance. Nothing leaves
+  the browser. So a reload ends the network, and payments start over in a new world.
 - Both wallets live in one tab and one worker.
 - The payment rail and the balances. The SDK's `FakeRail` "pays", and the balances are
   numbers this demo moves by what the rail reports it paid. No real money, chain or keys of
@@ -41,8 +41,8 @@ mocked payment rail.
   `feat/browser-csp-worker` of pubky/paykit-rs
   ([pull request #603](https://github.com/pubky/paykit-rs/pull/603), part of a stack of
   browser pull requests), pinned to `0e1db21`. The pin must move when that stack merges.
-- The evidence against a real Switch service, over a real network, is in those pull requests
-  (#603 and the stack it builds on), not here.
+- The evidence against a real Dispatch service, over a real network, is in those pull
+  requests (#603 and the stack it builds on), not here.
 
 ## Run it
 
@@ -104,7 +104,7 @@ two runs each:
 
 | | Raw | gzip -9 |
 | --- | --- | --- |
-| `paykit_wasm_wallet_demo_bg.wasm` | 7,380,728 bytes | 2,744,192 bytes |
+| `paykit_wasm_wallet_demo_bg.wasm` | 7,380,728 bytes | 2,744,226 bytes |
 | `paykit_wasm_wallet_demo.js` (glue) | 36,766 bytes | 7,470 bytes |
 
 | Engine (store) | Load | Start | Request | Pay, Proof and Receipt |

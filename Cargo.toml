@@ -18,10 +18,12 @@ crate-type = ["cdylib"]
 test = false
 doctest = false
 
-# Paykit and the Pubky Switch crates come from git, pinned to exact commits. Paykit's browser
-# support (`paykit-browser`) is not merged yet: the pin is the head of the draft branch
-# `feat/browser-csp-worker` of pubky/paykit-rs (pull request #603), and has to move when that
-# stack merges. The Switch commit is the one that Paykit commit pins in its own Cargo.toml.
+# Paykit and the Pubky Dispatch crates come from git, pinned to exact commits. Paykit's
+# browser support (`paykit-browser`) is not merged yet: the pin is the head of the draft
+# branch `feat/browser-csp-worker` of pubky/paykit-rs (pull request #603), and has to move
+# when that stack merges. The Dispatch commit is the one that Paykit commit pins in its own
+# Cargo.toml. The Dispatch packages still carry their old name, `pubky-switch-*`, at that
+# commit; the dependency key gives the crate its new name in code, as paykit-rs does.
 [dependencies]
 # The browser host pieces: the sealed store on the Origin Private File System, the browser's
 # clock and timer, and the panic hook. Depending on it also selects the browser random number
@@ -31,9 +33,10 @@ paykit-lib = { git = "https://github.com/pubky/paykit-rs", rev = "0e1db210f1576a
 # `test-support` turns on `FakeRail`, the SDK's in-memory payment rail. It is the mocked part
 # of this demo: no real money moves.
 paykit-sdk = { git = "https://github.com/pubky/paykit-rs", rev = "0e1db210f1576a548e3f7085b8c9324068177027", features = ["test-support"] }
-# `test-support` turns on the client's `testing` module: in-memory scripted switches, a router
-# between them, test signers and an in-memory Homeserver. That is the simulated network.
-pubky-switch-client = { git = "https://github.com/pubky/pubky-dispatch", rev = "59364e2b5757aebba863588c1816f93ad9ecc57e", default-features = false, features = ["test-support"] }
+# `test-support` turns on the client's `testing` module: in-memory scripted Dispatches, a
+# router between them, test signers and an in-memory Homeserver. That is the simulated
+# network.
+pubky-dispatch-client = { package = "pubky-switch-client", git = "https://github.com/pubky/pubky-dispatch", rev = "59364e2b5757aebba863588c1816f93ad9ecc57e", default-features = false, features = ["test-support"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Exactly the version of the wasm-bindgen CLI that build.sh runs: the CLI refuses a module

@@ -11,8 +11,8 @@
 //!   Paykit App, the Payment Request, paying it, the Payment Proof and the Payment Receipt,
 //!   and reading Payment Receipts back from the sealed store after a reload. The sealed store
 //!   (`store.rs`) is real too.
-//! - **Simulated:** the network. The Pubky Switch services the wallets talk to are in-memory
-//!   test switches in this same WebAssembly instance (`world.rs`).
+//! - **Simulated:** the network. The Pubky Dispatch services the wallets talk to are
+//!   in-memory test Dispatches in this same WebAssembly instance (`world.rs`).
 //! - **Mocked:** the payment rail and the balances (`ledger.rs`). Nothing of value moves.
 //!
 //! ## Why the engine runs in a dedicated worker
@@ -34,12 +34,12 @@
 //! own. Inside, the browser's own promises (OPFS file handles, IndexedDB, `setTimeout`) are
 //! awaited as Rust futures through `wasm_bindgen_futures::JsFuture`.
 //!
-//! One wrinkle: the SDK's host traits (its `Timer`, the Switch client's transport and so on)
-//! ask for futures that are `Send`, meaning safe to move to another thread, because native
-//! apps run them on a thread pool. A future that awaits a JavaScript promise is not `Send`.
-//! `paykit_browser::send::run_local` bridges the two without `unsafe` code: it runs the
-//! browser future as a local task on this thread and hands the SDK a `Send` future that only
-//! waits on a channel for the result. The engine uses it indirectly, through
+//! One wrinkle: the SDK's host traits (its `Timer`, the Dispatch client's transport and so
+//! on) ask for futures that are `Send`, meaning safe to move to another thread, because
+//! native apps run them on a thread pool. A future that awaits a JavaScript promise is not
+//! `Send`. `paykit_browser::send::run_local` bridges the two without `unsafe` code: it runs
+//! the browser future as a local task on this thread and hands the SDK a `Send` future that
+//! only waits on a channel for the result. The engine uses it indirectly, through
 //! `paykit_browser::timer::JsTimer`. The module docs of `paykit_browser::send` explain why
 //! that is sound.
 //!

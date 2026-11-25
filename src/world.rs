@@ -1,15 +1,17 @@
-//! **Simulated.** The network the two wallets talk over: an in-memory Pubky Switch world
+//! **Simulated.** The network the two wallets talk over: an in-memory Pubky Dispatch world
 //! inside this same WebAssembly instance.
 //!
-//! A real wallet joins a Paykit App to its identity's Switch service over HTTPS. Here, the
-//! Switch client's test module (`pubky_switch_client::testing`) stands in for all of that:
+//! A real wallet joins a Paykit App to its identity's Dispatch service over HTTPS. Here,
+//! the Dispatch client's test module (`pubky_dispatch_client::testing`) stands in for all
+//! of that:
 //!
-//! - each identity (Alice, Bob) has a `TestSigner`, which approves its app's join the way the
-//!   identity's signer would, and a `ScriptedSwitch`, an in-memory switch at a made-up origin;
-//! - a `Router` is the "network": it hands each request to the switch at its origin;
+//! - each identity (Alice, Bob) has a `TestSigner`, which approves its app's join the way
+//!   the identity's signer would, and a `ScriptedSwitch`, an in-memory Dispatch at a
+//!   made-up origin;
+//! - a `Router` is the "network": it hands each request to the Dispatch at its origin;
 //! - a `TestHomeserver` holds the identities' public documents in memory;
-//! - a `TestClock` is the switches' clock. The engine keeps it at the browser's wall clock
-//!   ([`World::sync_clock`]), so the times the switches stamp are real times.
+//! - a `TestClock` is the Dispatches' clock. The engine keeps it at the browser's wall
+//!   clock ([`World::sync_clock`]), so the times the Dispatches stamp are real times.
 //!
 //! The keys are derived from a seed made from the start time: test keys with no value. The
 //! code that runs *on top* of this world is the real SDK, the same as on a phone.
@@ -21,18 +23,18 @@ use paykit_browser::timer::JsTimer;
 use paykit_lib::scopes::{keyed_scopes, PAYKIT_SCOPE_NAMES};
 use paykit_sdk::rail::FakeRail;
 use paykit_sdk::{AppScopes, Paykit, PaykitConfig, RequestedScopes};
-use pubky_switch_client::clock::{Clock, TestClock};
-use pubky_switch_client::store::StateStore;
-use pubky_switch_client::testing::{
+use pubky_dispatch_client::clock::{Clock, TestClock};
+use pubky_dispatch_client::store::StateStore;
+use pubky_dispatch_client::testing::{
     AppSpec, ProtocolSpec, Router, Seeds, TestHomeserver, TestIdentity, TestSigner,
 };
 
 use crate::error::Failure;
 
-/// Where Alice's simulated switch is. No request ever leaves the WebAssembly instance.
-const ALICE_SWITCH: &str = "https://alice-switch.example";
-/// Where Bob's simulated switch is.
-const BOB_SWITCH: &str = "https://bob-switch.example";
+/// Where Alice's simulated Dispatch is. No request ever leaves the WebAssembly instance.
+const ALICE_DISPATCH: &str = "https://alice-dispatch.example";
+/// Where Bob's simulated Dispatch is.
+const BOB_DISPATCH: &str = "https://bob-dispatch.example";
 
 /// The simulated network, the two identities on it, and the mock payment rail.
 pub struct World {
@@ -68,12 +70,13 @@ impl World {
                 spec.clone(),
             )
         };
-        let alice = signer("alice", ALICE_SWITCH);
-        let bob = signer("bob", BOB_SWITCH);
+        let alice = signer("alice", ALICE_DISPATCH);
+        let bob = signer("bob", BOB_DISPATCH);
         let router = Arc::new(Router::new());
+        // Upstream keeps the old names here: `add_switch`, `switch()`, `ScriptedSwitch`.
         router.add_switch(alice.origin(), alice.switch());
         router.add_switch(bob.origin(), bob.switch());
-        // The rail stamps each payment's time from the same clock as the switches.
+        // The rail stamps each payment's time from the same clock as the Dispatches.
         let rail = Arc::new(FakeRail::with_clock(Arc::clone(&clock) as Arc<dyn Clock>));
         Self {
             clock,
@@ -84,7 +87,7 @@ impl World {
         }
     }
 
-    /// Moves the switches' clock to the browser's wall clock, never backwards.
+    /// Moves the Dispatches' clock to the browser's wall clock, never backwards.
     pub fn sync_clock(&self) {
         let now = JsClock.now_ms();
         if now > self.clock.now_ms() {

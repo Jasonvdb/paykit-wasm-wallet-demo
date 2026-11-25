@@ -20,7 +20,7 @@
     <span>wasm: <b id="wasm-size">-</b></span>
     <span>load: <b id="load-time">-</b></span>
     <span>store: <b id="store-kind" data-kind="">-</b></span>
-    <span>simulated Switch network, mocked payment rail</span>
+    <span>simulated Dispatch network, mocked payment rail</span>
   </p>
   <p class="note" id="store-reason"></p>
   <div class="stopped" id="stopped" hidden>
@@ -72,7 +72,7 @@
   <p><b>Real:</b> the Paykit v0.2 SDK compiled to WebAssembly, running in a dedicated
     worker: joining, the Payment Request, paying, the Payment Proof and the Payment Receipt;
     the sealed store; the Content Security Policy.
-    <b>Simulated:</b> the Pubky Switch network, in memory inside the same WebAssembly
+    <b>Simulated:</b> the Pubky Dispatch network, in memory inside the same WebAssembly
     instance, with both wallets in this one tab.
     <b>Mocked:</b> the payment rail and the balances. No real money, chain or keys.</p>
 </footer>

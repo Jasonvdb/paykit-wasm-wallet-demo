@@ -18,7 +18,7 @@ use paykit_sdk::{
     PaymentEndpointPayload, PaymentReference, ReceiptsOf, RequestDestination, RequestDraft,
     RequestStatus,
 };
-use pubky_switch_client::clock::Clock;
+use pubky_dispatch_client::clock::Clock;
 use serde::Serialize;
 use web_time::Instant;
 
@@ -240,7 +240,7 @@ impl Engine {
         .map_err(|error| Failure::sdk("Bob sends the Payment Request", &error))?;
         if !matches!(sent.delivery, MessageDelivery::Accepted { .. }) {
             return Err(Failure::new(
-                "Alice's switch did not accept the Payment Request",
+                "Alice's Dispatch did not accept the Payment Request",
             ));
         }
         let request = sent
