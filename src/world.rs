@@ -6,7 +6,7 @@
 //! of that:
 //!
 //! - each identity (Alice, Bob) has a `TestSigner`, which approves its app's join the way
-//!   the identity's signer would, and a `ScriptedSwitch`, an in-memory Dispatch at a
+//!   the identity's signer would, and a `ScriptedDispatch`, an in-memory Dispatch at a
 //!   made-up origin;
 //! - a `Router` is the "network": it hands each request to the Dispatch at its origin;
 //! - a `TestHomeserver` holds the identities' public documents in memory;
@@ -73,9 +73,8 @@ impl World {
         let alice = signer("alice", ALICE_DISPATCH);
         let bob = signer("bob", BOB_DISPATCH);
         let router = Arc::new(Router::new());
-        // Upstream keeps the old names here: `add_switch`, `switch()`, `ScriptedSwitch`.
-        router.add_switch(alice.origin(), alice.switch());
-        router.add_switch(bob.origin(), bob.switch());
+        router.add_dispatch(alice.origin(), alice.dispatch());
+        router.add_dispatch(bob.origin(), bob.dispatch());
         // The rail stamps each payment's time from the same clock as the Dispatches.
         let rail = Arc::new(FakeRail::with_clock(Arc::clone(&clock) as Arc<dyn Clock>));
         Self {
